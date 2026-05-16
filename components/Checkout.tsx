@@ -40,6 +40,19 @@ export default function Checkout() {
     }
   };
 
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  const handleCheckout = async () => {
+    setIsProcessing(true); // Triggers loading UI instantly
+    try {
+      const response = await fetch('/api/checkout', { method: 'POST' });
+      const { url } = await response.json();
+      window.location.href = url; // Redirects
+    } catch (error) {
+      setIsProcessing(false); // Reverts if it fails
+    }
+  }
+
   return (
     <section id="checkout" className="checkout-section">
       <div className="container-sm">
@@ -92,7 +105,8 @@ export default function Checkout() {
                 />
               </div>
               <button 
-                type="submit" 
+                type="submit"
+                onClick={handleCheckout} 
                 className={`btn-submit ${status === 'processing' ? 'processing' : ''} ${status === 'success' ? 'success' : ''}`}
                 disabled={status === 'processing' || status === 'success'}
               >
