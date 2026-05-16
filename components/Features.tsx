@@ -9,6 +9,10 @@ const featureData = [
 
 export default function Features() {
   const [activeImg, setActiveImg] = useState(featureData[0].img);
+  
+  // Ref to securely track the active image inside the observer
+  const activeImgRef = useRef(featureData[0].img); 
+  
   const blockRefs = useRef<(HTMLDivElement | null)[]>([]);
   const stickyRef = useRef<HTMLDivElement>(null);
 
@@ -28,24 +32,28 @@ export default function Features() {
         if (block) revealObserver.observe(block);
     });
 
-    // Sticky Scroll Swapper
+    // Sticky Scroll Swapper (Instant, Glitch-Free)
     const stickyObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const newImg = entry.target.getAttribute('data-img');
-          if (newImg) {
-            const imgEl = document.getElementById('sticky-img');
-            if (imgEl) {
-              imgEl.style.opacity = '0';
-              setTimeout(() => {
-                setActiveImg(newImg);
-                imgEl.style.opacity = '1';
-              }, 300);
-            }
-          }
+      const visibleEntries = entries.filter(entry => entry.isIntersecting);
+
+      if (visibleEntries.length > 0) {
+        // Find the element most centered on the screen during fast scrolls
+        const dominantEntry = visibleEntries.reduce((prev, current) => {
+          return (prev.intersectionRatio > current.intersectionRatio) ? prev : current;
+        });
+
+        const newImg = dominantEntry.target.getAttribute('data-img');
+        
+        // Instantly update state if the image is new
+        if (newImg && newImg !== activeImgRef.current) {
+          activeImgRef.current = newImg;
+          setActiveImg(newImg); 
         }
-      });
-    }, { rootMargin: "-50% 0px -50% 0px" });
+      }
+    }, { 
+      rootMargin: "-50% 0px -50% 0px", 
+      threshold: 0 
+    });
 
     blockRefs.current.forEach(block => {
         if (block) stickyObserver.observe(block);
@@ -57,18 +65,45 @@ export default function Features() {
     };
   }, []);
 
+  // Dynamically update the watermark number based on the active image
+  const activeFeature = featureData.find(f => f.img === activeImg);
+
   return (
     <section id="features" className="features-section">
       <div className="container">
         <div className="features-layout">
+          
           <div className="features-sticky-col">
             <div className="sticky-container">
               <div className="sticky-frame reveal" ref={stickyRef}>
-                <div className="sticky-watermark">01</div>
-                <img id="sticky-img" src={activeImg} className="sticky-image" alt="Feature Graphic" />
+                
+                <div className="sticky-watermark">{activeFeature?.num || '01'}</div>
+                
+                {/* DOM Stacking: Render all images at once and toggle opacity instantly */}
+                {featureData.map((feat) => (
+                  <img 
+                    key={feat.id}
+                    src={feat.img} 
+                    className="sticky-image" 
+                    alt={feat.title} 
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      opacity: activeImg === feat.img ? 1 : 0,
+                      transition: 'none', // Overrides any CSS transitions to guarantee no fading
+                      pointerEvents: activeImg === feat.img ? 'auto' : 'none'
+                    }}
+                  />
+                ))}
+                
               </div>
             </div>
           </div>
+
           <div className="features-scroll-col">
             {featureData.map((feat, index) => (
               <div 
@@ -84,6 +119,7 @@ export default function Features() {
               </div>
             ))}
           </div>
+          
         </div>
       </div>
     </section>
