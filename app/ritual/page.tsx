@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 
-export default function RitualPage() {
+export default function ProcessPage() {
   useEffect(() => {
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
@@ -27,19 +27,19 @@ export default function RitualPage() {
       
       <main>
         {/* Header Section */}
-        <header className="ritual-header">
+        <header className="process-header">
           <div className="container header-content reveal">
-            <h1 className="ritual-title">
+            <h1 className="process-title">
               The <span style={{ color: 'var(--accent)' }}>Workflow.</span>
             </h1>
-            <p className="ritual-subtitle">
-              Great espresso requires intentionality. The KINETIC machine strips away the automation so you can intimately connect with the variables of extraction. This is the ritual.
+            <p className="process-subtitle">
+              Great espresso requires intentionality. The KINETIC machine strips away the automation so you can intimately connect with the variables of extraction. This is the process.
             </p>
           </div>
         </header>
 
-        {/* Ritual Steps */}
-        <section className="ritual-section">
+        {/* Process Steps */}
+        <section className="process-section">
           
           {/* Step 1 */}
           <div className="step-row">
