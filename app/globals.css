@@ -341,7 +341,7 @@ button, input {
 .hero-visual {
     width: 100%;
     position: relative;
-    background-color: var(--zinc-200);
+    background-color: var(--base);
     display: flex;
     align-items: center;
     justify-content: center;
