@@ -347,7 +347,6 @@ button, input {
     justify-content: center;
     overflow: hidden;
     min-height: 50svh;
-    height: 50svh;
 }
 
 @media (min-width: 1024px) {
