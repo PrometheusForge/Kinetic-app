@@ -51,7 +51,7 @@ export default function Features() {
         }
       }
     }, { 
-      rootMargin: "-50% 0px -50% 0px", 
+      rootMargin: "-45% 0px -45% 0px", 
       threshold: 0 
     });
 
@@ -79,13 +79,14 @@ export default function Features() {
                 
                 <div className="sticky-watermark">{activeFeature?.num || '01'}</div>
                 
-                {/* DOM Stacking: Render all images at once and toggle opacity instantly */}
                 {featureData.map((feat) => (
                   <img 
                     key={feat.id}
                     src={feat.img} 
                     className="sticky-image" 
                     alt={feat.title} 
+                    loading="eager"        // Forces browser to download immediately
+                    fetchPriority="high"   // Tells the browser not to delay this asset
                     style={{
                       position: 'absolute',
                       top: 0,
@@ -93,8 +94,9 @@ export default function Features() {
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                      opacity: activeImg === feat.img ? 1 : 0,
-                      transition: 'none', // Overrides any CSS transitions to guarantee no fading
+                      opacity: 1, // NEVER let the opacity drop to 0
+                      zIndex: activeImg === feat.img ? 10 : 1, // Bring active image to the top
+                      transition: 'none',
                       pointerEvents: activeImg === feat.img ? 'auto' : 'none'
                     }}
                   />
