@@ -14,36 +14,28 @@ export default function Home() {
   const [showExitModal, setShowExitModal] = useState(false);
   const [exitTriggered, setExitTriggered] = useState(false);
 
+  // Intersection Observer for Pure, Instant Image Swap
   useEffect(() => {
     const featureBlocks = document.querySelectorAll('.feature-block');
     
     const stickyObserver = new IntersectionObserver((entries) => {
-      //Filter elements leaving the screen
       const visibleEntries = entries.filter(entry => entry.isIntersecting);
 
       if (visibleEntries.length > 0) {
-        //If scrolling fast batches multiple elements, find the most visible one
+        // Find the element most centered on the screen
         const dominantEntry = visibleEntries.reduce((prev, current) => {
           return (prev.intersectionRatio > current.intersectionRatio) ? prev : current;
         });
 
         const newImg = dominantEntry.target.getAttribute('data-img');
         
+        // Instantly swap the image src if it's new, no timeouts or opacity changes
         if (newImg && newImg !== currentImgRef.current) {
           currentImgRef.current = newImg;
-          
-          if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
-          
-          setStickyImgOpacity(0);
-          
-          fadeTimeoutRef.current = setTimeout(() => {
-            setStickyImgSrc(newImg);
-            setStickyImgOpacity(1);
-          }, 300);
+          setStickyImgSrc(newImg); 
         }
       }
     }, { 
-      //Create 1-pixel tripwire in the middle
       rootMargin: "-50% 0px -50% 0px", 
       threshold: 0 
     });
@@ -52,7 +44,6 @@ export default function Home() {
     
     return () => {
       stickyObserver.disconnect();
-      if (fadeTimeoutRef.current) clearTimeout(fadeTimeoutRef.current);
     };
   }, []);
 
