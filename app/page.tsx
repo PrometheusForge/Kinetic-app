@@ -58,8 +58,8 @@ export default function Home() {
       <main>
         <Hero />
         <Marquee />
-        {/* 2. PASSED THE IMAGE STATE AS A PROP TO FEATURES */}
-        <Features currentImage={stickyImgSrc} />
+        
+        <Features />
         <Reviews />
         <Checkout />
       </main>
