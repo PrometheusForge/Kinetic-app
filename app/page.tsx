@@ -14,6 +14,11 @@ export default function Home() {
   const [showExitModal, setShowExitModal] = useState(false);
   const [exitTriggered, setExitTriggered] = useState(false);
 
+  // 1. ADDED MISSING STATE AND REFS HERE
+  const defaultImage = 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=800&auto=format&fit=crop';
+  const [stickyImgSrc, setStickyImgSrc] = useState(defaultImage);
+  const currentImgRef = useRef(defaultImage);
+
   // Intersection Observer for Pure, Instant Image Swap
   useEffect(() => {
     const featureBlocks = document.querySelectorAll('.feature-block');
@@ -53,7 +58,8 @@ export default function Home() {
       <main>
         <Hero />
         <Marquee />
-        <Features />
+        {/* 2. PASSED THE IMAGE STATE AS A PROP TO FEATURES */}
+        <Features currentImage={stickyImgSrc} />
         <Reviews />
         <Checkout />
       </main>
