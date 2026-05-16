@@ -1605,10 +1605,10 @@ button, input {
 }
 
 
-/*-----RITUAL PAGE-SPECIFIC STYLES-----*/
+/*-----PROCESS PAGE-SPECIFIC STYLES-----*/
 
 /* Header */
-.ritual-header {
+.process-header {
   padding-top: 10rem;
   padding-bottom: 6rem;
   background-color: white;
@@ -1618,7 +1618,7 @@ button, input {
   border-bottom: 2px solid var(--ink);
 }
 
-.ritual-title {
+.process-title {
   font-family: var(--font-display);
   font-weight: 700;
   line-height: 0.9;
@@ -1630,22 +1630,22 @@ button, input {
 }
 
 @media (min-width: 1024px) {
-  .ritual-title {
+  .Process-title {
     font-size: 6rem;
   }
 }
 
-.ritual-subtitle {
+.process-subtitle {
   font-size: 1.125rem;
   font-weight: 500;
   color: rgba(17, 17, 17, 0.8);
-  max-width: 32rem;
+  max-width: 36rem;
   margin: 0 auto;
   line-height: 1.625;
 }
 
-/*-----RITUAL STEPS-----*/
-.ritual-section {
+/*-----Process STEPS-----*/
+.process-section {
   background-color: var(--base);
 }
 
