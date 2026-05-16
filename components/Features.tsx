@@ -4,19 +4,20 @@ import React, { useEffect, useRef, useState } from 'react';
 const featureData = [
   { id: 1, img: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=800&auto=format&fit=crop', num: '01', title: 'Naked Portafilter.', desc: 'Watch the extraction happen in real time. The 58mm commercial-grade naked portafilter ensures perfect channeling visibility.' },
   { id: 2, img: 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?q=80&w=800&auto=format&fit=crop', num: '02', title: 'Kinetic Lever.', desc: 'Our patented compound-leverage system translates 10lbs of human force into a flawless 9-bar pressure curve.' },
-  { id: 3, img: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop', num: '03', title: 'Thermal Mass.', desc: 'Weighing 18lbs, the solid brass brew head retains boiling water temperatures with absolute stability throughout the pull.' }
+  { id: 3, img: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop', num: '03', title: 'Thermal Mass.', desc: 'Weighing 18lbs, the solid brass brew head retains boiling water temperatures with absolute stability throughout the pull.' },
+  { id: 4, img: 'https://plus.unsplash.com/premium_photo-1674327105074-46dd8319164b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', num: '04', title: 'Advanced Filtration.', desc: 'Experience the difference with our state-of-the-art filtration system.' }
 ];
 
 export default function Features() {
   const [activeImg, setActiveImg] = useState(featureData[0].img);
-  
-  // Ref to securely track the active image inside the observer
-  const activeImgRef = useRef(featureData[0].img); 
-  
   const blockRefs = useRef<(HTMLDivElement | null)[]>([]);
   const stickyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    featureData.forEach(feat => {
+      const img = new Image();
+      img.src = feat.img;
+    });
     // Reveal Observer
     const revealObserver = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
@@ -32,28 +33,15 @@ export default function Features() {
         if (block) revealObserver.observe(block);
     });
 
-    // Sticky Scroll Swapper (Instant, Glitch-Free)
+    // Sticky Scroll Swapper
     const stickyObserver = new IntersectionObserver((entries) => {
-      const visibleEntries = entries.filter(entry => entry.isIntersecting);
-
-      if (visibleEntries.length > 0) {
-        // Find the element most centered on the screen during fast scrolls
-        const dominantEntry = visibleEntries.reduce((prev, current) => {
-          return (prev.intersectionRatio > current.intersectionRatio) ? prev : current;
-        });
-
-        const newImg = dominantEntry.target.getAttribute('data-img');
-        
-        // Instantly update state if the image is new
-        if (newImg && newImg !== activeImgRef.current) {
-          activeImgRef.current = newImg;
-          setActiveImg(newImg); 
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const newImg = entry.target.getAttribute('data-img');
+          if (newImg) setActiveImg(newImg);
         }
-      }
-    }, { 
-      rootMargin: "-45% 0px -45% 0px", 
-      threshold: 0 
-    });
+      });
+    }, { rootMargin: "-50% 0px -50% 0px" });
 
     blockRefs.current.forEach(block => {
         if (block) stickyObserver.observe(block);
@@ -65,47 +53,26 @@ export default function Features() {
     };
   }, []);
 
-  // Dynamically update the watermark number based on the active image
-  const activeFeature = featureData.find(f => f.img === activeImg);
-
   return (
     <section id="features" className="features-section">
       <div className="container">
         <div className="features-layout">
-          
           <div className="features-sticky-col">
             <div className="sticky-container">
               <div className="sticky-frame reveal" ref={stickyRef}>
-                
-                <div className="sticky-watermark">{activeFeature?.num || '01'}</div>
-                
-                {featureData.map((feat) => (
-                  <img 
+                <div className="sticky-watermark">01</div>
+                {featureData.map(feat => (
+                  <img
                     key={feat.id}
-                    src={feat.img} 
-                    className="sticky-image" 
-                    alt={feat.title} 
-                    loading="eager"        // Forces browser to download immediately
-                    fetchPriority="high"   // Tells the browser not to delay this asset
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      opacity: 1, // NEVER let the opacity drop to 0
-                      zIndex: activeImg === feat.img ? 10 : 1, // Bring active image to the top
-                      transition: 'none',
-                      pointerEvents: activeImg === feat.img ? 'auto' : 'none'
-                    }}
+                    src={feat.img}
+                    className="sticky-image"
+                    style={{ opacity: activeImg === feat.img ? 1 : 0 }}
+                    alt="Feature Graphic"
                   />
                 ))}
-                
               </div>
             </div>
           </div>
-
           <div className="features-scroll-col">
             {featureData.map((feat, index) => (
               <div 
@@ -121,7 +88,6 @@ export default function Features() {
               </div>
             ))}
           </div>
-          
         </div>
       </div>
     </section>
