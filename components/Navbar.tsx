@@ -16,7 +16,7 @@ export default function Navbar() {
             <div className="nav-links">
               {/* Note the absolute paths with NO .html extension */}
               <Link href="/engineering" className="nav-link">Engineering</Link>
-              <Link href="/ritual" className="nav-link">The Ritual</Link>
+              <Link href="/process" className="nav-link">The Process</Link>
               <Link href="/support" className="nav-link">Support</Link>
             </div>
             
@@ -34,7 +34,7 @@ export default function Navbar() {
       
       <div className={`mobile-dropdown ${isOpen ? 'is-active' : ''}`}>
         <Link href="/engineering" className="mobile-dropdown-link" onClick={() => setIsOpen(false)}>Engineering</Link>
-        <Link href="/ritual" className="mobile-dropdown-link" onClick={() => setIsOpen(false)}>The Ritual</Link>
+        <Link href="/process" className="mobile-dropdown-link" onClick={() => setIsOpen(false)}>The Process</Link>
         <Link href="/support" className="mobile-dropdown-link" onClick={() => setIsOpen(false)}>Support</Link>
       </div>
     </>
