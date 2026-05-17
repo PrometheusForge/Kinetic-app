@@ -746,7 +746,7 @@ button, input {
 
 .review-card {
     padding: 2rem;
-    /*border-bottom: 2px solid rgba(255, 255, 255, 0.2);*/
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     transition: background-color 0.2s;
 }
 
@@ -757,7 +757,7 @@ button, input {
 }
 
 .review-card:nth-child(odd) {
-    /*border-right: 2px solid rgba(255, 255, 255, 0.2);*/
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .review-card:nth-child(odd):last-child {
