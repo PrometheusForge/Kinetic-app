@@ -14,44 +14,38 @@ export default function Checkout() {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('processing');
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      
-      const data = await res.json();
-
-      // If the backend successfully generated a Stripe session, redirect the user
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        // If Stripe threw an error, log it and reset the UI
-        console.error("No checkout URL returned:", data);
-        setStatus('error');
-      }
-    } catch (err) {
-      console.error("Checkout fetch failed:", err);
-      setStatus('error');
-    }
-  };
-
-  const [isProcessing, setIsProcessing] = useState(false);
+   const handleSubmit = async (e) => {
+  e.preventDefault();
   
-  const handleCheckout = async () => {
-    setIsProcessing(true); // Triggers loading UI instantly
-    try {
-      const response = await fetch('/api/checkout', { method: 'POST' });
-      const { url } = await response.json();
-      window.location.href = url; // Redirects
-    } catch (error) {
-      setIsProcessing(false); // Reverts if it fails
-    }
+  if (!formData.email || !formData.email.includes('@')) {
+    // Trigger your visual warning state here (e.g., setStatus('error'), or an alert)
+    setStatus('error'); 
+    
+    // The 'return' command instantly kills the function. 
+    // Nothing below this line will execute!
+    return; 
   }
+
+  // 2. Only if the email is valid does the code reach this point
+  setStatus('processing'); 
+  
+  try {
+    // We also need to make sure we are actually sending the email to the backend!
+    const response = await fetch('/api/checkout', { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: formData.email, finish: formData.finish }) // Sending the verified email and finish option
+    });
+    
+    const { url } = await response.json();
+    window.location.href = url; 
+    
+  } catch (error) {
+    setStatus('error'); 
+  }
+}
 
   return (
     <section id="checkout" className="checkout-section">
@@ -105,8 +99,7 @@ export default function Checkout() {
                 />
               </div>
               <button 
-                type="submit"
-                onClick={handleCheckout} 
+                type="submit" 
                 className={`btn-submit ${status === 'processing' ? 'processing' : ''} ${status === 'success' ? 'success' : ''}`}
                 disabled={status === 'processing' || status === 'success'}
               >
