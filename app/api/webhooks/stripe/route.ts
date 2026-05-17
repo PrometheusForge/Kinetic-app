@@ -39,10 +39,11 @@ export async function POST(req: NextRequest) {
  
   const session = await stripe.checkout.sessions.retrieve(
     sessionSummary.id,
-    {
-      expand: ['shipping_details', 'customer_details'],
-    }
+    { expand: ['shipping_details', 'customer_details'] }
   )
+
+  console.log('FULL SESSION:', JSON.stringify(session, null, 2))
+  console.log('SHIPPING DETAILS:', JSON.stringify((session as any).shipping_details, null, 2))
  
   if (session.payment_status !== 'paid') {
     return NextResponse.json({ received: true })
