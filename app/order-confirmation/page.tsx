@@ -46,14 +46,13 @@ export default async function OrderConfirmationPage(props: {
     )
   }
 
-  // All data comes from the Stripe session — no database query needed here.
   const email    = session.customer_email                   ?? '—'
   const amount   = ((session.amount_total ?? 0) / 100).toFixed(2)
   const finish   = session.metadata?.finish                 ?? 'Matte Black'
   const orderRef = session.metadata?.order_ref              ?? '—'
   const shipping = session.shipping_details
 
-  // Format the shipping address into a single readable string
+  // Format shipping address
   const addr = shipping ? [
     shipping.name,
     shipping.address?.line1,
@@ -65,11 +64,10 @@ export default async function OrderConfirmationPage(props: {
 
   return (
     <main style={styles.page}>
-      {/* Nav — matches site header */}
+   
       <nav style={styles.nav}>
         <a href="/" style={styles.navLogo}>KINETIC</a>
-        {/* Print button — triggers browser print dialog.
-            The @media print styles below hide everything except the receipt card. */}
+        
         <button onClick={() => window.print()} style={styles.printBtn} id="print-btn">
           PRINT RECEIPT
         </button>
@@ -86,7 +84,7 @@ export default async function OrderConfirmationPage(props: {
 
           <div style={styles.rule} />
 
-          {/* Order reference — the human-readable ID */}
+          {/* Order reference */}
           <div style={styles.refBlock}>
             <span style={styles.refLabel}>ORDER REFERENCE</span>
             <span style={styles.refValue}>{orderRef}</span>
@@ -99,7 +97,7 @@ export default async function OrderConfirmationPage(props: {
           <Row label="TOTAL CHARGED"  value={`$${amount}`} />
           <Row label="RECEIPT SENT TO" value={email} />
 
-          {/* Shipping address — only shown when Stripe collected it */}
+          {/* Shipping address only shown when Stripe collected it */}
           {addr && (
             <>
               <div style={styles.rule} />
@@ -122,13 +120,11 @@ export default async function OrderConfirmationPage(props: {
           <a href="/" style={styles.button}>← BACK TO HOME</a>
         </div>
 
-        {/* Session ref — small, for support use */}
+        {/* Session ref small, for support use */}
         <p style={styles.sessionRef}>Support ref: {sessionId.slice(0, 32)}...</p>
       </div>
 
-      {/* Print styles — injected via a style tag.
-          When the browser prints, only #receipt is visible.
-          Nav, print button, and session ref are hidden. */}
+      {/* Print styles via style tag. When browser prints, only #receipt is visible */}
       <style>{`
         @media print {
           body { background: white; }
