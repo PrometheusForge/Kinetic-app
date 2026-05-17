@@ -1,56 +1,96 @@
-import { NextResponse } from 'next/server';
-import Stripe from 'stripe';
-import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server'
+import Stripe from 'stripe'
+import { createClient } from '@supabase/supabase-js'
+ 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: '2023-10-16' as any,
+})
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, { 
-  apiVersion: '2023-10-16' as any 
-});
-
-// We must use the SERVICE ROLE KEY here to bypass RLS and edit the inventory securely
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-export async function POST(req: Request) {
-  const payload = await req.text();
-  const signature = req.headers.get('stripe-signature') as string;
-
-  let event;
-
+)
+ 
+export async function POST(req: NextRequest) {
+  const rawBody = await req.arrayBuffer()
+  const sig     = req.headers.get('stripe-signature')!
+ 
+  let event: Stripe.Event
+ 
   try {
-    // 1. Verify HMAC-SHA256 signature (Crucial security step)
-    event = stripe.webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK_SECRET!);
-  } catch (err: any) {
-    return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
+    event = stripe.webhooks.constructEvent(
+      Buffer.from(rawBody),
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    )
+  } catch {
+    // Forged or malformed request
+    return new NextResponse('Webhook signature verification failed', { status: 400 })
   }
 
-  // 2. Handle successful payment
-  if (event.type === 'payment_intent.succeeded') {
-      const paymentIntent = event.data.object as any;
-
-    // Fetch the current inventory
-    const { data: currentProduct } = await supabase
-        .from('products')
-        .select('inventory_count')
-        .eq('id', 'kinetic_base')
-        .single();
-
-    // Decrement inventory securely
-    if (currentProduct) {
-        await supabase
-          .from('products')
-          .update({ inventory_count: currentProduct.inventory_count - 1 })
-          .eq('id', 'kinetic_base');
-    }
-
-    // Record the order in the database
-    await supabase.from('orders').insert({
-      stripe_payment_id: paymentIntent.id,
-      customer_email: paymentIntent.receipt_email || 'unknown@email.com',
-      status: 'paid'
-    });
+  if (event.type !== 'checkout.session.completed') {
+    return NextResponse.json({ received: true })
   }
+ 
+  const session = event.data.object as Stripe.Checkout.Session
 
-  return NextResponse.json({ received: true });
+  if (session.payment_status !== 'paid') {
+    return NextResponse.json({ received: true })
+  }
+ 
+  const { data: existing } = await supabase
+    .from('orders')
+    .select('id')
+    .eq('stripe_session_id', session.id)
+    .single()
+ 
+  if (existing) {
+    return NextResponse.json({ received: true, duplicate: true })
+  }
+ 
+  const shipping = session.shipping_details
+  const meta     = session.metadata ?? {}
+ 
+  const deliveryRecord = {
+    order_ref:          meta.order_ref   ?? null,
+    stripe_session_id:  session.id,
+    stripe_payment_id:  session.payment_intent as string,
+ 
+    customer_email:     session.customer_email ?? null,
+    customer_name:      shipping?.name         ?? null,
+ 
+    finish:             meta.finish ?? 'Matte Black',
+    amount_total:       session.amount_total ?? 0,   // in cents
+    currency:           session.currency     ?? 'usd',
+ 
+    shipping_name:      shipping?.name                  ?? null,
+    shipping_line1:     shipping?.address?.line1        ?? null,
+    shipping_line2:     shipping?.address?.line2        ?? null,
+    shipping_city:      shipping?.address?.city         ?? null,
+    shipping_state:     shipping?.address?.state        ?? null,
+    shipping_postal:    shipping?.address?.postal_code  ?? null,
+    shipping_country:   shipping?.address?.country      ?? null,
+ 
+    fulfillment_status: 'pending',   // pending → packed → shipped → delivered
+ 
+    created_at: new Date().toISOString(),
+  }
+ 
+  const { error: insertError } = await supabase
+    .from('orders')
+    .insert(deliveryRecord)
+ 
+  if (insertError) {
+    console.error('Supabase insert failed:', insertError)
+    return new NextResponse('Database write failed', { status: 500 })
+  }
+ 
+  const { error: inventoryError } = await supabase
+    .rpc('decrement_inventory', { product_id: 'kinetic-base-unit', amount: 1 })
+ 
+  if (inventoryError) {
+    console.error('Inventory decrement failed:', inventoryError)
+  }
+ 
+  return NextResponse.json({ received: true, order_ref: meta.order_ref })
 }
