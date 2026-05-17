@@ -86,7 +86,8 @@ export default async function OrderConfirmationPage(props: {
 
           <div style={styles.rule} />
 
-          <Row label="PRODUCT"         value={`KINETIC Base Unit — ${finish}`} />
+          <Row label="PRODUCT"         value={
+            `KINETIC Base Unit — ${finish}`} />
           <Row label="TOTAL CHARGED"   value={`$${amount}`} />
           <Row label="RECEIPT SENT TO" value={email} />
 
@@ -117,7 +118,7 @@ export default async function OrderConfirmationPage(props: {
 
       <style>{`
         @media print {
-          body { background: white; }
+          body { background: #F4F4F0; }
           nav { display: none !important; }
           #receipt {
             box-shadow: none !important;
@@ -202,6 +203,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#111111',
   },
   rule: {
+    fontFamily: "'Space Grotesk', sans-serif",
     height: '1.5px',
     backgroundColor: '#111111',
     margin: '1.25rem 0',
