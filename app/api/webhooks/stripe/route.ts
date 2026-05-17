@@ -37,16 +37,21 @@ export async function POST(req: NextRequest) {
   // to ensure all fields are populated.
   const sessionSummary = event.data.object as Stripe.Checkout.Session
  
-  const session = await stripe.checkout.sessions.retrieve(
-    sessionSummary.id,
-    { expand: ['shipping_details', 'customer_details'] }
-  )
-
-  console.log('FULL SESSION:', JSON.stringify(session, null, 2))
-  console.log('SHIPPING DETAILS:', JSON.stringify((session as any).shipping_details, null, 2))
- 
-  if (session.payment_status !== 'paid') {
-    return NextResponse.json({ received: true })
+  let session: any
+  try {
+    session = await stripe.checkout.sessions.retrieve(
+      sessionSummary.id,
+      { expand: ['shipping_details', 'customer_details'] }
+    )
+    console.log('SESSION RETRIEVED:', session.id)
+    console.log('SHIPPING:', JSON.stringify(session.shipping_details))
+    console.log('METADATA:', JSON.stringify(session.metadata))
+  } catch (retrieveError: any) {
+    console.error('SESSION RETRIEVE FAILED:', retrieveError.message)
+    return new NextResponse(
+      JSON.stringify({ error: 'Session retrieve failed', message: retrieveError.message }),
+      { status: 500 }
+    )
   }
  
   const { data: existing } = await supabase
