@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true, duplicate: true })
   }
  
-  const shipping = session.shipping_details
+  const shipping = (session as any).shipping_details
   const meta     = session.metadata ?? {}
  
   const deliveryRecord = {
