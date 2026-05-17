@@ -1,70 +1,98 @@
 "use client";
+import React, { useEffect, useState, useRef } from 'react';
 
-import React, { useState, useEffect, useRef } from 'react';
-import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
-import Marquee from '../components/Marquee';
-import Features from '../components/Features';
-import Reviews from '../components/Reviews';
-import Checkout from '../components/Checkout';
-import Footer from '../components/Footer';
-import ExitModal from '../components/ExitModal';
+export default function Reviews() {
+  const [remaining, setRemaining] = useState(48);
+  const [flash, setFlash] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
-export default function Home() {
-  const [showExitModal, setShowExitModal] = useState(false);
-  const [exitTriggered, setExitTriggered] = useState(false);
-
-  // 1. ADDED MISSING STATE AND REFS HERE
-  const defaultImage = 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=800&auto=format&fit=crop';
-  const [stickyImgSrc, setStickyImgSrc] = useState(defaultImage);
-  const currentImgRef = useRef(defaultImage);
-
-  // Intersection Observer for Pure, Instant Image Swap
   useEffect(() => {
-    const featureBlocks = document.querySelectorAll('.feature-block');
-    
-    const stickyObserver = new IntersectionObserver((entries) => {
-      const visibleEntries = entries.filter(entry => entry.isIntersecting);
-
-      if (visibleEntries.length > 0) {
-        // Find the element most centered on the screen
-        const dominantEntry = visibleEntries.reduce((prev, current) => {
-          return (prev.intersectionRatio > current.intersectionRatio) ? prev : current;
-        });
-
-        const newImg = dominantEntry.target.getAttribute('data-img');
-        
-        // Instantly swap the image src if it's new, no timeouts or opacity changes
-        if (newImg && newImg !== currentImgRef.current) {
-          currentImgRef.current = newImg;
-          setStickyImgSrc(newImg); 
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
         }
-      }
-    }, { 
-      rootMargin: "-50% 0px -50% 0px", 
-      threshold: 0 
-    });
+      });
+    }, { threshold: 0.15 });
 
-    featureBlocks.forEach(block => stickyObserver.observe(block));
-    
+    if (headerRef.current) observer.observe(headerRef.current);
+    if (gridRef.current) observer.observe(gridRef.current);
+
+    const interval = setInterval(() => {
+      if (Math.random() > 0.8 && remaining > 12) {
+        setRemaining(prev => prev - 1);
+        setFlash(true);
+        setTimeout(() => setFlash(false), 300);
+      }
+    }, 5000);
+
     return () => {
-      stickyObserver.disconnect();
+      observer.disconnect();
+      clearInterval(interval);
     };
-  }, []);
+  }, [remaining]);
 
   return (
-    <>
-      <Navbar />
-      <main>
-        <Hero />
-        <Marquee />
-        
-        <Features />
-        <Reviews />
-        <Checkout />
-      </main>
-      <Footer />
-      {showExitModal && <ExitModal onClose={() => setShowExitModal(false)} />}
-    </>
+    <section id="reviews" className="reviews-section">
+      <div className="container">
+        <div className="reviews-header reveal" ref={headerRef}>
+          <div>
+            <h2 className="reviews-title">The Verdict.</h2>
+            <p className="reviews-subtitle">Data gathered from 1,200 early adopters.</p>
+          </div>
+
+          <div className={`live-data-indicator ${flash ? 'flash' : ''}`}>
+            <div className="pulse-dot"></div>
+            <div><span className="live-number">{remaining}</span> Units remaining in Batch 04</div>
+          </div>
+        </div>
+
+        <div className="reviews-grid reveal" ref={gridRef}>
+          <div className="review-card">
+            <div className="review-stars">★★★★★</div>
+            <p className="review-text">"The workflow is meditative. It completely replaced my $3,000 dual-boiler machine. The clarity of the espresso is unmatched."</p>
+            <div className="review-author">James Hoffman • Barista</div>
+          </div>
+  
+          <div className="review-card highlight">
+            <div className="review-stars">★★★★★</div>
+            <h3 className="review-text-large">"A triumph of industrial design."</h3>
+            <div className="review-author">— Wired Magazine</div>
+          </div>
+
+          <div className="review-card">
+            <div className="review-stars">★★★★★</div>
+            <p className="review-text">"Built like a tank. No pumps to break, no circuits to fry. This is an heirloom piece that will outlive me."</p>
+            <div className="review-author">Sarah Jenkins • Architect</div>
+          </div>
+          
+          <div className="review-card highlight">
+            <div className="review-stars">★★★★★</div>
+            <h3 className="review-text-large">"A triumph of industrial design."</h3>
+            <div className="review-author">— Wired Magazine</div>
+          </div>
+
+          <div className="review-card">
+            <div className="review-stars">★★★★★</div>
+            <p className="review-text">"Built like a tank. No pumps to break, no circuits to fry. This is an heirloom piece that will outlive me."</p>
+            <div className="review-author">Sarah Jenkins • Architect</div>
+          </div>
+
+          <div className="review-card highlight">
+            <div className="review-stars">★★★★★</div>
+            <h3 className="review-text-large">"A triumph of industrial design."</h3>
+            <div className="review-author">— Wired Magazine</div>
+          </div>
+
+          <div className="review-card">
+            <div className="review-stars">★★★★★</div>
+            <p className="review-text">"Built like a tank. No pumps to break, no circuits to fry. This is an heirloom piece that will outlive me."</p>
+            <div className="review-author">Sarah Jenkins • Architect</div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
