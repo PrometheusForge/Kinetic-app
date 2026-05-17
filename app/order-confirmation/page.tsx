@@ -221,7 +221,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#888888',
   },
   refValue: {
-    fontFamily: 'monospace',
+    fontFamily: "'Space Grotesk', sans-serif",
     fontWeight: 700,
     fontSize: '1.2rem',
     letterSpacing: '0.08em',
@@ -244,12 +244,13 @@ const styles: Record<string, React.CSSProperties> = {
     paddingTop: '2px',
   },
   detailValue: {
-    fontFamily: "'Inter', sans-serif",
+    fontFamily: "'Space Grotesk', sans-serif",
     fontSize: '0.875rem',
     color: '#111111',
     textAlign: 'right',
   },
   subCopy: {
+    fontFamily: "'Space Grotesk', sans-serif",
     fontSize: '0.8rem',
     lineHeight: 1.65,
     color: '#555555',
@@ -281,10 +282,10 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '1rem',
   },
   sessionRef: {
+    fontFamily: "'Space Grotesk', sans-serif",
     marginTop: '1.25rem',
     fontSize: '0.65rem',
     color: '#aaaaaa',
     letterSpacing: '0.04em',
-    fontFamily: 'monospace',
   },
 }
