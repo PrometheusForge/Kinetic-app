@@ -5,15 +5,13 @@ import { createClient } from '@supabase/supabase-js'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2023-10-16' as any,
 })
-
+ 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
  
 export async function POST(req: NextRequest) {
-  console.log('SUPABASE URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
-  console.log('SERVICE KEY EXISTS:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
   const rawBody = await req.arrayBuffer()
   const sig     = req.headers.get('stripe-signature')!
  
@@ -26,16 +24,26 @@ export async function POST(req: NextRequest) {
       process.env.STRIPE_WEBHOOK_SECRET!
     )
   } catch {
-    // Forged or malformed request
     return new NextResponse('Webhook signature verification failed', { status: 400 })
   }
-
+ 
   if (event.type !== 'checkout.session.completed') {
     return NextResponse.json({ received: true })
   }
  
-  const session = event.data.object as Stripe.Checkout.Session
-
+  // The webhook payload contains a summary of the session, not the full object.
+  // Shipping details, customer details, and metadata are not guaranteed to be
+  // present in the summary. Retrieve the full session from Stripe directly
+  // to ensure all fields are populated.
+  const sessionSummary = event.data.object as Stripe.Checkout.Session
+ 
+  const session = await stripe.checkout.sessions.retrieve(
+    sessionSummary.id,
+    {
+      expand: ['shipping_details', 'customer_details'],
+    }
+  )
+ 
   if (session.payment_status !== 'paid') {
     return NextResponse.json({ received: true })
   }
@@ -50,6 +58,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true, duplicate: true })
   }
  
+  // shipping_details is now fully populated from the retrieved session
   const shipping = (session as any).shipping_details
   const meta     = session.metadata ?? {}
  
@@ -62,7 +71,7 @@ export async function POST(req: NextRequest) {
     customer_name:      shipping?.name         ?? null,
  
     finish:             meta.finish ?? 'Matte Black',
-    amount_total:       session.amount_total ?? 0,   // in cents
+    amount_total:       session.amount_total ?? 0,
     currency:           session.currency     ?? 'usd',
  
     shipping_name:      shipping?.name                  ?? null,
@@ -73,7 +82,7 @@ export async function POST(req: NextRequest) {
     shipping_postal:    shipping?.address?.postal_code  ?? null,
     shipping_country:   shipping?.address?.country      ?? null,
  
-    fulfillment_status: 'pending',   // pending → packed → shipped → delivered
+    fulfillment_status: 'pending',
  
     created_at: new Date().toISOString(),
   }
