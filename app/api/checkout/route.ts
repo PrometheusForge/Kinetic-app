@@ -23,8 +23,8 @@ export async function POST(req: Request) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: 'KINETIC Espresso Maker — ${finish}',
-              description: 'Zero electronics. Total control.',
+             name: `KINETIC Espresso Maker — ${finish}`,
+              description: `Zero electronics. Total control.`,
               // Optional: Add the image URL from your prototype
               images: ['https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?q=80&w=800&auto=format&fit=crop'], 
             },
@@ -34,7 +34,6 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'payment',
-      customer_email: email,
       // send the user after they pay (or cancel)
       // We use the origin URL so it works locally and in production
       success_url: `${req.headers.get('origin')}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
