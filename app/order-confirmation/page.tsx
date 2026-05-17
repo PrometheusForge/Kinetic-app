@@ -1,4 +1,5 @@
-import Stripe from 'stripe';
+import Stripe from 'stripe'
+import PrintButton from './PrintButton'
 
 export default async function OrderConfirmationPage(props: {
   searchParams: Promise<{ session_id?: string }>
@@ -46,13 +47,12 @@ export default async function OrderConfirmationPage(props: {
     )
   }
 
-  const email    = session.customer_email                   ?? '—'
+  const email    = session.customer_email               ?? '—'
   const amount   = ((session.amount_total ?? 0) / 100).toFixed(2)
-  const finish   = session.metadata?.finish                 ?? 'Matte Black'
-  const orderRef = session.metadata?.order_ref              ?? '—'
-  const shipping = session.shipping_details
+  const finish   = session.metadata?.finish             ?? 'Matte Black'
+  const orderRef = session.metadata?.order_ref          ?? '—'
+  const shipping = (session as any).shipping_details
 
-  // Format shipping address
   const addr = shipping ? [
     shipping.name,
     shipping.address?.line1,
@@ -64,27 +64,21 @@ export default async function OrderConfirmationPage(props: {
 
   return (
     <main style={styles.page}>
-   
       <nav style={styles.nav}>
         <a href="/" style={styles.navLogo}>KINETIC</a>
-        
-        <button onClick={() => window.print()} style={styles.printBtn} id="print-btn">
-          PRINT RECEIPT
-        </button>
+        {/* PrintButton is a Client Component — keeps window.print() off the server */}
+        <PrintButton />
       </nav>
 
       <div style={styles.wrapper}>
         <div style={styles.card} id="receipt">
 
-          {/* Status badge */}
           <div style={styles.badge}>ORDER CONFIRMED</div>
 
-          {/* Headline */}
           <h1 style={styles.headline}>Your order<br />is secured.</h1>
 
           <div style={styles.rule} />
 
-          {/* Order reference */}
           <div style={styles.refBlock}>
             <span style={styles.refLabel}>ORDER REFERENCE</span>
             <span style={styles.refValue}>{orderRef}</span>
@@ -92,12 +86,10 @@ export default async function OrderConfirmationPage(props: {
 
           <div style={styles.rule} />
 
-          {/* Order details */}
-          <Row label="PRODUCT"        value={`KINETIC Base Unit — ${finish}`} />
-          <Row label="TOTAL CHARGED"  value={`$${amount}`} />
+          <Row label="PRODUCT"         value={`KINETIC Base Unit — ${finish}`} />
+          <Row label="TOTAL CHARGED"   value={`$${amount}`} />
           <Row label="RECEIPT SENT TO" value={email} />
 
-          {/* Shipping address only shown when Stripe collected it */}
           {addr && (
             <>
               <div style={styles.rule} />
@@ -120,15 +112,13 @@ export default async function OrderConfirmationPage(props: {
           <a href="/" style={styles.button}>← BACK TO HOME</a>
         </div>
 
-        {/* Session ref small, for support use */}
         <p style={styles.sessionRef}>Support ref: {sessionId.slice(0, 32)}...</p>
       </div>
 
-      {/* Print styles via style tag. When browser prints, only #receipt is visible */}
       <style>{`
         @media print {
           body { background: white; }
-          nav, #print-btn, .no-print { display: none !important; }
+          nav { display: none !important; }
           #receipt {
             box-shadow: none !important;
             border: 1px solid #111 !important;
@@ -141,7 +131,6 @@ export default async function OrderConfirmationPage(props: {
   )
 }
 
-// ── Shared row component ──────────────────────────────────────────────────────
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div style={styles.detailRow}>
@@ -151,7 +140,6 @@ function Row({ label, value }: { label: string; value: string }) {
   )
 }
 
-// ── Inline styles — mirrors KINETIC design tokens ─────────────────────────────
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: '100vh',
@@ -179,18 +167,6 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: '0.12em',
     color: '#111111',
     textDecoration: 'none',
-  },
-  printBtn: {
-    fontFamily: "'Space Grotesk', sans-serif",
-    fontWeight: 700,
-    fontSize: '0.65rem',
-    letterSpacing: '0.1em',
-    color: '#111111',
-    backgroundColor: 'transparent',
-    border: '1.5px solid #111111',
-    padding: '7px 14px',
-    cursor: 'pointer',
-    boxShadow: '3px 3px 0px 0px #111111',
   },
   wrapper: {
     paddingTop: '120px',
