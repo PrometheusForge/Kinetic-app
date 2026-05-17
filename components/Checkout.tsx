@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 export default function Checkout() {
-  const [formData, setFormData] = useState({ finish: 'matte', email: '' });
+  const [formData, setFormData] = useState({ finish: 'Matte Black', email: '' });
   const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
   const revealRef = useRef<HTMLDivElement>(null);
 
@@ -71,8 +71,8 @@ export default function Checkout() {
                     <input 
                       type="radio" 
                       className="sr-only radio-input" 
-                      checked={formData.finish === 'matte'}
-                      onChange={() => setFormData({...formData, finish: 'matte'})}
+                      checked={formData.finish === 'Matte Black'}
+                      onChange={() => setFormData({...formData, finish: 'Matte Black'})}
                     />
                     <div className="radio-box">Matte Black</div>
                   </label>
@@ -80,8 +80,8 @@ export default function Checkout() {
                     <input 
                       type="radio" 
                       className="sr-only radio-input" 
-                      checked={formData.finish === 'brass'}
-                      onChange={() => setFormData({...formData, finish: 'brass'})}
+                      checked={formData.finish === 'Raw Brass'}
+                      onChange={() => setFormData({...formData, finish: 'Raw Brass'})}
                     />
                     <div className="radio-box">Raw Brass</div>
                   </label>
