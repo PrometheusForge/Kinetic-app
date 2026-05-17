@@ -82,7 +82,10 @@ export async function POST(req: NextRequest) {
  
   if (insertError) {
     console.error('Supabase insert failed:', insertError)
-    return new NextResponse('Database write failed', { status: 500 })
+    return new NextResponse(
+      JSON.stringify({ error: insertError.message, details: insertError }),
+      { status: 500 }
+    )
   }
  
   const { error: inventoryError } = await supabase
