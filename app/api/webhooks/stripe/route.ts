@@ -12,6 +12,8 @@ const supabase = createClient(
 )
  
 export async function POST(req: NextRequest) {
+  console.log('SUPABASE URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+  console.log('SERVICE KEY EXISTS:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
   const rawBody = await req.arrayBuffer()
   const sig     = req.headers.get('stripe-signature')!
  
