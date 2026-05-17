@@ -34,6 +34,7 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'payment',
+      customer_email: email,
       // send the user after they pay (or cancel)
       // We use the origin URL so it works locally and in production
       success_url: `${req.headers.get('origin')}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
