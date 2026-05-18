@@ -31,29 +31,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true })
   }
  
-  // The webhook payload contains a summary of the session, not the full object.
-  // Shipping details, customer details, and metadata are not guaranteed to be
-  // present in the summary. Retrieve the full session from Stripe directly
-  // to ensure all fields are populated.
+  // Retrieve the full session from Stripe — no expand parameter
+  // shipping_details is returned by default on a retrieved session
   const sessionSummary = event.data.object as Stripe.Checkout.Session
+  const session = await stripe.checkout.sessions.retrieve(sessionSummary.id)
  
-  let session: any
-  try {
-    session = await stripe.checkout.sessions.retrieve(
-      sessionSummary.id,
-      { expand: ['shipping_details', 'customer_details'] }
-    )
-    console.log('SESSION RETRIEVED:', session.id)
-    console.log('SHIPPING:', JSON.stringify(session.shipping_details))
-    console.log('METADATA:', JSON.stringify(session.metadata))
-  } catch (retrieveError: any) {
-    console.error('SESSION RETRIEVE FAILED:', retrieveError.message)
-    return new NextResponse(
-      JSON.stringify({ error: 'Session retrieve failed', message: retrieveError.message }),
-      { status: 500 }
-    )
+  if (session.payment_status !== 'paid') {
+    return NextResponse.json({ received: true })
   }
  
+  // Idempotency guard — prevents duplicate records on Stripe retries
   const { data: existing } = await supabase
     .from('orders')
     .select('id')
@@ -64,33 +51,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true, duplicate: true })
   }
  
-  // shipping_details is now fully populated from the retrieved session
   const shipping = (session as any).shipping_details
   const meta     = session.metadata ?? {}
  
   const deliveryRecord = {
-    order_ref:          meta.order_ref   ?? null,
+    order_ref:          meta.order_ref            ?? null,
     stripe_session_id:  session.id,
-    stripe_payment_id:  session.payment_intent as string,
- 
-    customer_email:     session.customer_email ?? null,
-    customer_name:      shipping?.name         ?? null,
- 
-    finish:             meta.finish ?? 'Matte Black',
-    amount_total:       session.amount_total ?? 0,
-    currency:           session.currency     ?? 'usd',
- 
-    shipping_name:      shipping?.name                  ?? null,
+    stripe_payment_id:  session.payment_intent    as string,
+    customer_email:     session.customer_email    ?? null,
+    customer_name:      shipping?.name            ?? null,
+    finish:             meta.finish               ?? 'Matte Black',
+    amount_total:       session.amount_total      ?? 0,
+    currency:           session.currency          ?? 'usd',
+    shipping_name:      shipping?.name            ?? null,
     shipping_line1:     shipping?.address?.line1        ?? null,
     shipping_line2:     shipping?.address?.line2        ?? null,
     shipping_city:      shipping?.address?.city         ?? null,
     shipping_state:     shipping?.address?.state        ?? null,
     shipping_postal:    shipping?.address?.postal_code  ?? null,
     shipping_country:   shipping?.address?.country      ?? null,
- 
     fulfillment_status: 'pending',
- 
-    created_at: new Date().toISOString(),
+    created_at:         new Date().toISOString(),
   }
  
   const { error: insertError } = await supabase
