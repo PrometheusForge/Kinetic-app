@@ -202,17 +202,16 @@ button, input {
 .hero-section {
     min-height: 100svh;
     overflow: hidden;
-    padding-top: 5rem;
+    padding-top: 4rem;
     display: flex;
     flex-direction: column;
     border-bottom: 2px solid var(--ink);
 }
 
 @media (min-width: 1024px) {
-    .hero-section {
-        flex-direction: row;
-        padding-top: 0rem;
-    }
+  .hero-section {
+    flex-direction: row;
+  }
 }
 
 .hero-content {
@@ -1970,7 +1969,7 @@ button, input {
 
 [data-theme="dark"] {
   --base:               black;
-  --ink-light:          #F4F4F0;     
+  --ink-light:          #F4F4F0;    /* Light ink color for text and borders */ 
   --ink-light-content:  rgba(244,244,240,0.8);     
   --zinc-100:           #1A1A1A;       
   --zinc-200:           #222222;       
