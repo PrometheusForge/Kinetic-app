@@ -40,6 +40,9 @@ export default function Navbar() {
       </nav>
 
       <div className={`mobile-dropdown ${isOpen ? 'is-active' : ''}`}>
+        <Link href="/#checkout" className="mobile-dropdown-link" onClick={() => setIsOpen(false)}>
+          Pre-Order
+        </Link>
         <Link href="/engineering" className="mobile-dropdown-link" onClick={() => setIsOpen(false)}>Engineering</Link>
         <Link href="/process"     className="mobile-dropdown-link" onClick={() => setIsOpen(false)}>The Process</Link>
         <Link href="/support"     className="mobile-dropdown-link" onClick={() => setIsOpen(false)}>Support</Link>
