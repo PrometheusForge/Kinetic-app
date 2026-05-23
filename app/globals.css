@@ -354,6 +354,10 @@ button, input {
     max-width: 100%; 
   }
 
+  .hero-title span {
+    font-size: 4.5rem;
+  }
+
   .hero-visual {
     display: none;
   }
