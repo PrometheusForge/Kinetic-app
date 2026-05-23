@@ -18,19 +18,16 @@ export default function Checkout() {
   e.preventDefault();
   
   if (!formData.email || !formData.email.includes('@')) {
-    // Trigger your visual warning state here (e.g., setStatus('error'), or an alert)
+
     setStatus('error'); 
-    
-    // The 'return' command instantly kills the function. 
-    // Nothing below this line will execute!
+ 
     return; 
   }
 
-  // 2. Only if the email is valid does the code reach this point
+  //Only valid emails reach this point
   setStatus('processing'); 
   
   try {
-    // We also need to make sure we are actually sending the email to the backend!
     const response = await fetch('/api/checkout', { 
       method: 'POST',
       headers: {
