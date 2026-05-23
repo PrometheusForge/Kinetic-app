@@ -2,10 +2,38 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 const featureData = [
-  { id: 1, img: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=800&auto=format&fit=crop', num: '01', title: 'Naked Portafilter.', desc: 'Watch the extraction happen in real time. The 58mm commercial-grade naked portafilter ensures perfect channeling visibility.' },
-  { id: 2, img: 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?q=80&w=800&auto=format&fit=crop', num: '02', title: 'Kinetic Lever.', desc: 'Our patented compound-leverage system translates 10lbs of human force into a flawless 9-bar pressure curve.' },
-  { id: 3, img: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop', num: '03', title: 'Thermal Mass.', desc: 'Weighing 18lbs, the solid brass brew head retains boiling water temperatures with absolute stability throughout the pull.' },
-  { id: 4, img: 'https://plus.unsplash.com/premium_photo-1674327105074-46dd8319164b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', num: '04', title: 'Advanced Filtration.', desc: 'Experience the difference with our state-of-the-art filtration system.' }
+  { 
+    id: 1, 
+    themeClass: '', // Default styling
+    img: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=800&auto=format&fit=crop',
+    num: '01', 
+    title: 'Naked Portafilter.', 
+    desc: 'Watch the extraction happen in real time. The 58mm commercial-grade naked portafilter ensures perfect channeling visibility.'
+  },
+  { 
+    id: 2, 
+    themeClass: 'theme-dark-accent', // Custom class for the 2nd div
+    img: 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?q=80&w=800&auto=format&fit=crop', 
+    num: '02', 
+    title: 'Kinetic Lever.', 
+    desc: 'Our patented compound-leverage system translates 10lbs of human force into a flawless 9-bar pressure curve.'
+  },
+  { 
+    id: 3, 
+    themeClass: '', 
+    img: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop', 
+    num: '03', 
+    title: 'Thermal Mass.', 
+    desc: 'Weighing 18lbs, the solid brass brew head retains boiling water temperatures with absolute stability throughout the pull.',
+  },
+  { 
+    id: 4, 
+    themeClass: 'theme-blue-accent', // Custom class for the 4th div
+    img: 'https://plus.unsplash.com/premium_photo-1674327105074-46dd8319164b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 
+    num: '04', 
+    title: 'Advanced Filtration.', 
+    desc: 'Experience the difference with our state-of-the-art filtration system.'
+  }
 ];
 
 export default function Features() {
@@ -60,7 +88,7 @@ export default function Features() {
           <div className="features-sticky-col">
             <div className="sticky-container">
               <div className="sticky-frame reveal" ref={stickyRef}>
-                <div className="sticky-watermark">01</div>
+                {/*<div className="sticky-watermark">01</div>*/}
                 {featureData.map(feat => (
                   <img
                     key={feat.id}
@@ -77,7 +105,7 @@ export default function Features() {
             {featureData.map((feat, index) => (
               <div 
                 key={feat.id} 
-                className={`feature-block reveal ${index === 1 ? 'bg-white' : ''}`}
+                className={`feature-block reveal ${feat.themeClass}`}
                 data-img={feat.img}
                 ref={el => { blockRefs.current[index] = el; }}
               >
