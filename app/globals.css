@@ -331,25 +331,21 @@ button, input {
 }
 
 @media (max-width: 1023px) {
-  .hero-section{
+  .hero-content{
+    padding: 8rem 2rem 4rem;
+    width: 100%;
+    border-right: none;
     flex-direction: column;
   }
 
   .hero-title {
-    font-size: 6rem;
-    margin-bottom: 1rem;
+    font-size: 4rem;
+    line-height: 1;
+    margin-bottom: 0rem;
   }
 
   .hero-visual {
     display: none;
-    padding: 0px;
-  }
-
-  .hero-content{
-    padding-top: 8rem;
-    width: 100%;
-    
-    border-right: none;
   }
 
   .hero-scarcity{
