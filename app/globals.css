@@ -342,14 +342,14 @@ button, input {
   } 
 
   .hero-content{
-    padding: 8rem 2rem 4rem;
+    padding: 8rem 2rem 0rem;
     width: 100%;
     border-right: none;
     flex-direction: column;
   }
 
   .hero-title {
-    font-size: 4rem;
+    font-size: 6rem;
     line-height: 1;
     margin-bottom: 0rem;
     white-space: normal;   
@@ -364,12 +364,6 @@ button, input {
 
   .hero-scarcity{
     margin-top: 2rem;
-  }
-}
-
-@media (620px <= width <= 1023px) {
-  .hero-title {
-    font-size: 6rem;
   }
 }
 
