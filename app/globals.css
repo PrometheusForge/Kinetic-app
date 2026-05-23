@@ -351,9 +351,6 @@ button, input {
     font-size: 5rem;
     line-height: 1;
     margin-bottom: 0rem;
-    white-space: normal;   
-    overflow-wrap: break-word;
-    word-break: break-word;
     max-width: 100%; 
   }
 
