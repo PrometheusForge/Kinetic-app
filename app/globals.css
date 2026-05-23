@@ -82,7 +82,7 @@ button, input {
 
 @media (max-width: 1023px) {
     .nav-inner {
-        height: 3rem;
+        height: 4rem;
     }
 }
 
@@ -104,7 +104,7 @@ button, input {
 .nav-controls {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap:1rem;
 }
 
 .nav-links {
@@ -165,7 +165,7 @@ button, input {
     background: none; 
     border: none; 
     font-family: var(--font-display); 
-    font-size: 0.875rem; 
+    font-size: 1rem; 
     font-weight: 700; 
     text-transform: uppercase; 
     color: var(--ink); cursor: pointer; 
@@ -915,6 +915,8 @@ button, input {
   .checkout-wrapper {
     display: flex;
     flex-direction: column;
+    box-shadow: none;
+    border: 2px solid var(--ink);
   }
 }
 
@@ -1124,7 +1126,7 @@ button, input {
 
 .footer-links {
   list-style: none;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 500;
   display: flex;
   flex-direction: column;
