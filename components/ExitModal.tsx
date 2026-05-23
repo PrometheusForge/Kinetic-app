@@ -26,7 +26,7 @@ export default function ExitModal({ onClose }: { onClose: () => void }) {
         {!submitted ? (
           <>
             <h2 className="modal-title-huge">Wait.</h2>
-            <p className="modal-text">Don't compromise on your morning ritual. Drop your email to unlock <span className="highlight-bg">Free Global Shipping</span> on your pre-order.</p>
+            <p className="modal-text">Don't compromise on your morning routine. Drop your email to unlock <span className="highlight-bg">Free Global Shipping</span> on your pre-order.</p>
             <form onSubmit={handleSubmit} className="modal-form">
               <input type="email" required placeholder="Email Address..." className="modal-input" />
               <button type="submit" className="modal-btn">Unlock</button>
