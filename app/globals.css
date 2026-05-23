@@ -203,36 +203,21 @@ button, input {
     min-height: 100svh;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     border-bottom: 2px solid var(--ink);
 }
 
-@media (min-width: 1024px) {
-  .hero-section {
-    flex-direction: row;
-  }
-}
 
 .hero-content {
-    padding: 2rem;
+    padding: 9rem 5rem 4rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     background-color: var(--base);
-    border-bottom: 2px solid var(--ink);
     position: relative;
     z-index: 10;
     width: 50%;
-    padding: 4rem;
-    border-bottom: none;
     border-right: 2px solid var(--ink);
-}
-
-@media (max-width: 1023px) {
-  .hero-content {
-    border-bottom: 2px solid var(--ink);
-    border-right: none;
-  }
 }
 
 .hero-badge {
@@ -250,20 +235,16 @@ button, input {
 }
 
 .hero-title {
-    font-size: clamp(3.5rem, 6vw, 6rem);
-    font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: -0.05em;
-    line-height: 0.9;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    overflow-wrap: break-word;
-}
-
-@media (max-width: 1023px) {
-    .hero-title {
-        font-size: 4rem;
-    }
+  font-size: 7rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 0.9;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  letter-spacing: -0.05em;
+  background-color: var(--base);
+  display: inline-block;
+  padding: 1rem 0;
 }
 
 .hero-title span {
@@ -350,18 +331,25 @@ button, input {
 }
 
 @media (max-width: 1023px) {
-  .visual-grid { 
-    display: none; 
+  .hero-section{
+    flex-direction: column;
   }
-}
 
-@media (max-width: 800px) {
+  .hero-title {
+    font-size: 6rem;
+    margin-bottom: 1rem;
+  }
+
   .hero-visual {
     display: none;
+    padding: 0px;
   }
 
   .hero-content{
-    padding-top: 4rem;
+    padding-top: 8rem;
+    width: 100%;
+    
+    border-right: none;
   }
 
   .hero-scarcity{
@@ -625,12 +613,6 @@ button, input {
     border-bottom: 2px solid var(--ink);
 }
 
-@media (max-width: 1023px) {
-    .reviews-section {
-        padding: 2rem 0rem;
-    }
-}
-
 .reviews-header {
     padding: 2rem;
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
@@ -638,15 +620,6 @@ button, input {
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
-}
-
-@media (max-width: 1023px) {
-    .reviews-header {
-        padding: 2rem;
-        flex-direction: row;
-        align-items: flex-end;
-        gap: 0;
-    }
 }
 
 .reviews-title {
@@ -657,18 +630,27 @@ button, input {
     margin-bottom: 1rem;
 }
 
-@media (max-width: 1023px) {
-    .reviews-title {
-        font-size: 2rem;
-    }
-}
-
 .reviews-subtitle {
     font-size: 1.125rem;
     color: rgba(255, 255, 255, 0.6);
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1023px) {
+  .reviews-section {
+      padding: 2rem 0rem;
+  }
+
+  .reviews-title {
+      font-size: 2rem;
+  }
+
+  .reviews-header {
+      padding: 2rem;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: 0;
+  }
+
   .review-card {
     padding: 1rem;
   }
@@ -704,13 +686,6 @@ button, input {
     gap: 1rem;
     align-items: center;
     transition: background-color 0.3s;
-}
-
-@media (max-width: 1023px) {
-    .live-data-indicator {
-        padding: 0.5rem;
-        font-size: 0.75rem;
-    }
 }
 
 .live-data-indicator.flash {
@@ -822,13 +797,6 @@ button, input {
     margin-bottom: 1rem;
     line-height: 1.2;
 }
-
-@media (max-width: 1023px) {
-    .review-text-large {
-        font-size: 1.25rem;
-    }
-}
-
 .review-author {
     font-family: var(--font-display);
     font-weight: 700;
@@ -836,12 +804,6 @@ button, input {
     letter-spacing: 0.1em;
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.5);
-}
-
-@media (max-width: 1023px) {
-    .review-author {
-        font-size: 0.75rem;
-    }
 }
 
 .review-card.highlight .review-author {
