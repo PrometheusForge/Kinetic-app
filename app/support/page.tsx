@@ -83,7 +83,7 @@ export default function SupportPage() {
         <section className="faq-section section-padding">
           <div className="container-sm">
             <div className="faq-header reveal">
-              <h2 className="page-title" style={{ fontSize: '3rem' }}>Questions.</h2>
+              <h2 className="page-title question-header">Questions.</h2>
             </div>
 
             <div className="faq-list reveal">
@@ -130,7 +130,7 @@ export default function SupportPage() {
                 </p>
                 <button 
                   className="btn-submit" 
-                  style={{ backgroundColor: 'white', color: 'var(--ink)' }}
+                  //style={{ backgroundColor: 'white', color: 'var(--ink)' }}
                 >
                   View Parts Store →
                 </button>

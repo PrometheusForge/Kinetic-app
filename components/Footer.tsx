@@ -64,7 +64,6 @@ export default function Footer() {
               Join the list for batch drops.
             </p>
 
-            {/* Dispatch form — state lives here, calls /api/dispatch */}
             {status === 'done' ? (
               <p className="footer-desc">{message}</p>
             ) : (
