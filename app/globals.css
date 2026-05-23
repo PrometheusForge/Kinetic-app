@@ -2059,6 +2059,10 @@ button, input {
 
 [data-theme="dark"] .hero-content        { 
   border-right: 2px solid var(--ink-light);
+
+  @media(max-width: 1023px) {
+    border-right: none;    
+  }
 }
 
 [data-theme="dark"] .hero-scarcity    { 
@@ -2255,6 +2259,7 @@ button, input {
 [data-theme="dark"] .modal-overlay {
   .modal-content {
     background-color: var(--ink-muted);  
+    border: 2px solid var(--ink-light);
   }
 
   .modal-title-huge {
