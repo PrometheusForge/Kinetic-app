@@ -22,7 +22,7 @@ export default function Navbar() {
             <Link
               href="/#checkout"
               className="btn-primary-sm"
-              style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+              style={{ textDecoration: 'none'}}
             >
               Pre-Order
             </Link>
