@@ -341,7 +341,7 @@ button, input {
   } 
 
   .hero-content{
-    padding: 8rem 2rem 1rem;
+    padding: 10rem 2rem 1rem;
     width: 100%;
     border-right: none;
     flex-direction: column;
