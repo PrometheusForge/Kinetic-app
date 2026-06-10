@@ -34,7 +34,7 @@ export default function Hero() {
             Pure <br/><span>Extraction.</span>
           </h1>
           <p className="hero-desc">
-            The world's first gravity-assisted manual espresso press. Zero electronics. Total control. Machined from solid brass and stainless steel.
+            The world's first gravity-assisted manual espresso press.<br/> Zero electronics. Total control. Machined from solid brass and stainless steel.
           </p>
           <div className="hero-action-group">
             <button onClick={scrollToCheckout} className="btn-large">
