@@ -11,8 +11,6 @@ export default function Reviews() {
   const totalCards = 8;
 
   useEffect(() => {
-    
-
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -37,7 +35,12 @@ export default function Reviews() {
     const carousel = carouselRef.current;
     const handleScroll = () => {
       if (!carousel) return;
-      const index = Math.round(carousel.scrollLeft / carousel.offsetWidth);
+      const firstCard = carousel.firstElementChild;
+      if (!firstCard) return;
+      const cardWidth = firstCard.getBoundingClientRect().width;
+      const gap = parseFloat(window.getComputedStyle(carousel).gap) || 0;
+      const stepWidth = cardWidth + gap;
+      const index = Math.round(carousel.scrollLeft / stepWidth);
       setActiveSlide(index);
     };
     if (carousel) carousel.addEventListener('scroll', handleScroll, { passive: true });
